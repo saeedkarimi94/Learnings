@@ -1,7 +1,8 @@
 # معماری کلی کوبرنتیز:
+<p align="right">
+  <img width="1156" height="665" alt="image" src="https://github.com/user-attachments/assets/0e92004e-8a70-415d-8d3c-7ddcf1597980" />
+</p>
 <div dir="rtl">
-<img width="1156" height="665" alt="image" src="https://github.com/user-attachments/assets/0e92004e-8a70-415d-8d3c-7ddcf1597980" />
-
 معماری کوبرنتیز به دو بخش اصلی تقسیم می‌شود: Master Node (Control Plane) و Worker Nodes.
 
 * **Master Node (کشتی فرماندهی)**: مرکز مدیریت، برنامه‌ریزی و تصمیم‌گیری است.
