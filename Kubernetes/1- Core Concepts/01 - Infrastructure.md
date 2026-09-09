@@ -73,8 +73,7 @@
 * **kube-proxy (افسر مسیریابی و شبکه)**: مدیریت شبکه و قوانین فایروال (iptables / IPVS) را روی نود بر عهده دارد تا سرویس‌ها (Service) و پادها بتوانند در داخل و خارج کلاستر با هم ارتباط برقرار کنند.
 * **Container Runtime (موتور اجرای کانتینر)**: نرم‌افزاری که کانتینرها را از رجیستری دانلود (Pull) کرده و Run می‌کند (مثل containerd، CRI-O یا در گذشته Docker).
 
-<img width="917" height="439" alt="image" src="https://github.com/user-attachments/assets/d6c32c69-2132-47af-a167-bdd18b3d0bf1" />
-
+<img width="828" height="394" alt="image" src="https://github.com/user-attachments/assets/7bf4c145-e597-457d-bc2f-e9c1c73e1e93" />
  
 ---
 
