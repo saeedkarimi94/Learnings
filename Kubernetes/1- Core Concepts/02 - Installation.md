@@ -38,5 +38,6 @@
 | TCP      | Inbound   | 30000-32767| NodePort Services       | All                |
 
 
+
 ---
 
