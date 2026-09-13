@@ -13,10 +13,10 @@
         <li>MAC address</li>
         <li>product_uuid</li>
     </ul>
-* **تنظیمات سرور**: در تنظیمات مربوط به سرور حتماً بایدموارد زیر در همه نودها یکسان باشد:
- - Uniqe hostname
- - MAC address
- - product_uuid
+* **تنظیمات سرور**: در تنظیمات مربوط به سرور حتماً باید موارد زیر در همه نودها یکسان باشد:
+    - Unique hostname
+    - MAC address
+    - product_uuid
 * **swap disable**: به دلیل اینکه kubelet با Swap compatibility ندارد باید این مورد خاموش باشد.
 * **Set Time Zone**: باید در همه نودها TimeZone یکی باشد (Asia/Tehran)
 * **static IP**:روی همه نودها باید static IP ست کنیم چرا که در صورتی که آی پی سرور عوض بشه همه کانتینرهای کوبر از بین خواهند رفت.
