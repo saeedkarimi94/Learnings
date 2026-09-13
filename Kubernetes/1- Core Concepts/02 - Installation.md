@@ -20,6 +20,14 @@
 ## **Port and Protocols**:
 
 * هنگام اجرای کوبرنتیز در محیطی با مرزهای شبکه‌ای سختگیرانه، مانند مرکز داده داخلی با فایروال‌های شبکه فیزیکی یا شبکه‌های مجازی در فضای ابری عمومی، آگاهی از پورت‌ها و پروتکل‌های مورد استفاده توسط اجزای کوبرنتیز مفید است. وپورت‌های مورد نیاز کوبرنتیز به شرح زیر است:
+| Protocol | Direction | Port Range | Purpose                 | Used By            |
+|----------|-----------|------------|-------------------------|--------------------|
+| TCP      | Inbound   | 6443       | Kubernetes API server   | All                |
+| TCP      | Inbound   | 2379-2380  | etcd server client API  | kube-apiserver, etcd |
+| TCP      | Inbound   | 10250      | Kubelet API             | Self, Control plane |
+| TCP      | Inbound   | 10259      | kube-scheduler          | Self               |
+| TCP      | Inbound   | 10257      | kube-controller-manager | Self               |
+
     - 6443: پورت پیشفرض Kubernetes API server
     - 2379-2380: etcd server client API
     - 10250: Kubelet API
