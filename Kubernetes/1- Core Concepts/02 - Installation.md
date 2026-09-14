@@ -37,10 +37,6 @@
 | TCP      | Inbound   | 10250      | Kubelet API             | All                |
 | TCP      | Inbound   | 30000-32767| NodePort Services       | All                |
 
-## Install Container Runtime (Contanerd):
-
- Workerها یک «Container Runtime» دارند که کانتینرها را واقعاً اجرا می‌کند
-
 ## معماری و نقشه راه نصب (با kubeadm)
 
 فرآیند راه‌اندازی کلاستر به این صورت است که کارهای زیر را در چند فاز انجام می‌دهیم:
