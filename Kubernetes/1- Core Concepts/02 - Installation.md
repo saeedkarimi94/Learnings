@@ -80,3 +80,25 @@ sudo mkdir -p /etc/containerd
 containerd config default | sudo tee /etc/containerd/config.toml
 ```
 * نکته بسیار مهم (تنظیم cgroup): چون لینوکس و کلاستر از systemd استفاده می‌کنند، باید به containerd هم بگوییم درایور cgroup را روی systemd بگذارد (وگرنه kubelet کرش می‌کند)
+
+### ۳. نصب ابزارهای کوبرنتیز (kubelet, kubeadm, kubectl)
+* این سه ابزار پایه‌ای را روی همه ماشین‌ها نصب می‌کنیم:
+
+* **kubelet**: سرویسی که روی سرور می‌ماند و پادها را اجرا می‌کند.
+* **kubeadm**: ابزار راه‌اندازی و جوین کردن کلاستر.
+* **kubectl**: ابزار خط فرمان برای صحبت با کلاستر.
+```bash
+sudo apt update
+sudo apt install -y apt-transport-https ca-certificates curl gpg
+
+# اضافه کردن کلید امنیتی و مخزن کوبرنتیز
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.30/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+
+sudo apt update
+sudo apt install -y kubelet kubeadm kubectl
+# قفل کردن نسخه‌ها برای جلوگیری از آپدیت ناخواسته
+sudo apt-mark hold kubelet kubeadm kubectl
+
+```
+---
