@@ -49,7 +49,7 @@
 ### ۱. تنظیمات شبکه کرنل (Kernel Modules & Sysctl)
 برای اینکه ترافیک کانتینرها به درستی فوروارد شود و فایروال iptables بسته‌ها را ببیند:
 
-### بارگذاری ماژول‌های کرنل
+* ### بارگذاری ماژول‌های کرنل
 ```bash
 cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
 overlay
