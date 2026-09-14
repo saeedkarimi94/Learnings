@@ -48,7 +48,7 @@
 
 ### ۱. تنظیمات شبکه کرنل (Kernel Modules & Sysctl)
 برای اینکه ترافیک کانتینرها به درستی فوروارد شود و فایروال iptables بسته‌ها را ببیند:
-```bash
+
 # بارگذاری ماژول‌های کرنل
 cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
 overlay
@@ -59,6 +59,7 @@ sudo modprobe overlay
 sudo modprobe br_netfilter
 
 # اعمال تنظیمات شبکه در کرنل
+```bash
 cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
 net.bridge.bridge-nf-call-iptables  = 1
 net.bridge.bridge-nf-call-ip6tables = 1
@@ -66,5 +67,13 @@ net.ipv4.ip_forward                 = 1
 EOF
 
 sudo sysctl --system
+```
+### ۲. نصب Container Runtime (انتخاب ما: containerd)
+کوبرنتیز برای اجرای کانتینرها به یک Runtime نیاز دارد. روش استاندارد استفاده از containerd است:
+# نصب containerd از پکیج‌منیجر Ubuntu
+sudo apt update
+sudo apt install -y containerd
 
-### ۱. تنظیمات شبکه کرنل (Kernel Modules & Sysctl)
+# تولید فایل کانفیگ پیش‌فرض
+sudo mkdir -p /etc/containerd
+containerd config default | sudo tee /etc/containerd/config.toml
