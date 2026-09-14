@@ -41,5 +41,38 @@
 
  Workerها یک «Container Runtime» دارند که کانتینرها را واقعاً اجرا می‌کند
 
+ ## معماری و نقشه راه نصب (با kubeadm)
+
+فرآیند راه‌اندازی کلاستر به این صورت است که کارهای زیر را در چند فاز انجام می‌دهیم:
+- **آماده‌سازی همه نودها (Master و Workerها):** پیش‌نیازهای شبکه کرنل + نصب Container Runtime (containerd) + نصب ابزارهای Kubeadm/Kubelet.
+- **راه‌اندازی Control Plane (فقط روی Master):** اجرای دستور `kubeadm init` و راه‌اندازی شبکه پادها (CNI).
+- **پیوستن Workerها به کلاستر (فقط روی Workerها):** اجرای دستور `kubeadm join`.
+
+---
+
+## فاز ۱: کارهای مشترک (باید روی همه سرورها اجرا شود)
+
+### ۱. تنظیمات شبکه کرنل (Kernel Modules & Sysctl)
+برای اینکه ترافیک کانتینرها به درستی فوروارد شود و فایروال iptables بسته‌ها را ببیند:
+```bash
+# بارگذاری ماژول‌های کرنل
+cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
+overlay
+br_netfilter
+EOF
+
+sudo modprobe overlay
+sudo modprobe br_netfilter
+
+# اعمال تنظیمات شبکه در کرنل
+cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-iptables  = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+net.ipv4.ip_forward                 = 1
+EOF
+
+sudo sysctl --system
+
+
 ---
 
