@@ -132,6 +132,39 @@ kubectl get nodes
 sudo kubeadm join <IP_MASTER_NODE>:6443 --token <TOKEN> \
 --discovery-token-ca-cert-hash sha256:<HASH>
 ```
+* **نکته**: توکن‌های پیش‌فرض kubeadm فقط ۲۴ ساعت اعتبار دارند و بعد از آن منقضی (Expire) می‌شوند.
+اگر بعداً خواستی یک Worker جدید اضافه کنی یا دستور Join را گم کردیم، کافی است بروی روی سرور Master (Control Plane) و یکی از دو روش زیر را انجام دهیم:
+1. روی نود Master دستور زیر را بزن:
+```bash
+kubeadm token create --print-join-command
+```
+کارکردش چیه؟
+این دستور یک توکن معتبر جدید می‌سازد و دستور کامل kubeadm join ... را با تمام مقادیر (--token و --discovery-token-ca-cert-hash) کف ترمینال تحویلت می‌دهد! دقیقاً همان را کپی می‌کنی و روی Worker جدید اجرا می‌کنی.
+2. **مرحله‌به‌مرحله و دیدن توکن‌ها (برای درک عمیق‌تر)**: اگر بخواهی ببینی چه توکن‌هایی الآن فعال هستند یا دستی مقادیر را درآوری:
+  1. دیدن وضعیت توکن‌های فعلی روی Master:
+```bash
+kubeadm token list
+```
+اگر توکنی بود و وضعیتش معتبر (TTL داشت)، می‌توانی از همان استفاده کنی. اگر منقضی شده بود، یک توکن جدید می‌سازی:
+```bash
+kubeadm token create
+```
+این به تو یک استرینگ مثل abcdef.0123456789abcdef می‌دهد.
+
+  2. درآوردن هش سرتیفیکیت (CA Cert Hash):
+این مقدار تغییر نمی‌کند، ولی اگر نداشتی با این دستور روی Master محاسبه‌اش می‌کنی:
+```bash
+openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | \
+  openssl rsa -pubin -outform der 2>/dev/null | \
+  openssl dgst -sha256 -hex | sed 's/^.* //'
+```
+  3. سرهم کردن دستور Join:
+```bash
+sudo kubeadm join <IP_MASTER>:6443 --token <توکن_مرحله_اول> --discovery-token-ca-cert-hash sha256:<هش_مرحله_دوم>
+```
+
+
+
 ## فاز ۴: اعتبارسنجی (Validation)
 ```bash
 kubectl get nodes
@@ -141,6 +174,7 @@ kubectl get nodes
 NAME       STATUS   ROLES           AGE   VERSION
 master     Ready    control-plane   10m   v1.30.x
 worker-1   Ready    <none>          2m    v1.30.x
+worker-2   Ready    <none>          2m    v1.30.x
 ```
 
 
