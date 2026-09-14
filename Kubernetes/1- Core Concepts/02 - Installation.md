@@ -70,6 +70,7 @@ sudo sysctl --system
 ```
 ### ۲. نصب Container Runtime (انتخاب ما: containerd)
 کوبرنتیز برای اجرای کانتینرها به یک Runtime نیاز دارد. روش استاندارد استفاده از containerd است:
+```bash
 # نصب containerd از پکیج‌منیجر Ubuntu
 sudo apt update
 sudo apt install -y containerd
@@ -77,3 +78,5 @@ sudo apt install -y containerd
 # تولید فایل کانفیگ پیش‌فرض
 sudo mkdir -p /etc/containerd
 containerd config default | sudo tee /etc/containerd/config.toml
+```
+* نکته بسیار مهم (تنظیم cgroup): چون لینوکس و کلاستر از systemd استفاده می‌کنند، باید به containerd هم بگوییم درایور cgroup را روی systemd بگذارد (وگرنه kubelet کرش می‌کند)
