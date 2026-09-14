@@ -49,7 +49,7 @@
 ### ۱. تنظیمات شبکه کرنل (Kernel Modules & Sysctl)
 برای اینکه ترافیک کانتینرها به درستی فوروارد شود و فایروال iptables بسته‌ها را ببیند:
 
-* ### بارگذاری ماژول‌های کرنل
+### بارگذاری ماژول‌های کرنل
 ```bash
 cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
 overlay
@@ -101,6 +101,50 @@ sudo apt update
 sudo apt install -y kubelet kubeadm kubectl
 # قفل کردن نسخه‌ها برای جلوگیری از آپدیت ناخواسته
 sudo apt-mark hold kubelet kubeadm kubectl
-
 ```
+## فاز ۲: کارهای اختصاصی Master (Control Plane)
+
+### ۱. مقداردهی اولیه کلاستر (kubeadm init)
+این دستور را فقط روی سرور Master می‌زنیم. رنج شبکه پادها (pod-network-cidr) برای پلاگین شبکه (مثل Calico یا Flannel) مشخص می‌شود:
+```bash
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=<IP_MASTER_NODE>
+```
+* **نکته**: در پایان خروجی این دستور، یک خط شامل kubeadm join ... --token ... به شما می‌دهد. آن را در جایی کپی و ذخیره کنید!
+### ۲. تنظیم دسترسی kubectl برای کاربر عادی
+برای اینکه بتوانید با دستور kubectl با کلاستر کار کنید:
+```bash
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
+### ۳. نصب پلاگین شبکه پادها (CNI Plugin)
+تا وقتی پلاگین شبکه نصب نشود، نودها در حالت NotReady می‌مانند چون پادها نمی‌توانند به هم آی‌پی بدهند. ما از Flannel یا Calico استفاده می‌کنیم (مثال با Flannel):
+```bash
+kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
+```
+اکنون اگر دستور زیر را بزنید وضعیت مستر باید Ready شود:
+```bash
+kubectl get nodes
+```
+## فاز ۳: کارهای اختصاصی Workerها (Join کردن)
+حالا وارد سرورهای Worker می‌شویم و دستوری که در خروجی kubeadm init دریافت کرده بودیم را با sudo اجرا می‌کنیم:
+```bash
+sudo kubeadm join <IP_MASTER_NODE>:6443 --token <TOKEN> \
+--discovery-token-ca-cert-hash sha256:<HASH>
+```
+## فاز ۴: اعتبارسنجی (Validation)
+```bash
+kubectl get nodes
+```
+خروجی باید چیزی شبیه به این باشد و وضعیت همه نودها Ready شده باشد:
+```bash
+NAME       STATUS   ROLES           AGE   VERSION
+master     Ready    control-plane   10m   v1.30.x
+worker-1   Ready    <none>          2m    v1.30.x
+```
+
+
+
+
+
 ---
