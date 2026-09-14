@@ -41,12 +41,12 @@
 
  Workerها یک «Container Runtime» دارند که کانتینرها را واقعاً اجرا می‌کند
 
- ## معماری و نقشه راه نصب (با kubeadm)
+## معماری و نقشه راه نصب (با kubeadm)
 
 فرآیند راه‌اندازی کلاستر به این صورت است که کارهای زیر را در چند فاز انجام می‌دهیم:
-- **آماده‌سازی همه نودها (Master و Workerها):** پیش‌نیازهای شبکه کرنل + نصب Container Runtime (containerd) + نصب ابزارهای Kubeadm/Kubelet.
-- **راه‌اندازی Control Plane (فقط روی Master):** اجرای دستور `kubeadm init` و راه‌اندازی شبکه پادها (CNI).
-- **پیوستن Workerها به کلاستر (فقط روی Workerها):** اجرای دستور `kubeadm join`.
+1. **آماده‌سازی همه نودها (Master و Workerها):** پیش‌نیازهای شبکه کرنل + نصب Container Runtime (containerd) + نصب ابزارهای Kubeadm/Kubelet.
+2. **راه‌اندازی Control Plane (فقط روی Master):** اجرای دستور `kubeadm init` و راه‌اندازی شبکه پادها (CNI).
+3. **پیوستن Workerها به کلاستر (فقط روی Workerها):** اجرای دستور `kubeadm join`.
 
 ---
 
@@ -73,6 +73,4 @@ EOF
 
 sudo sysctl --system
 
-
----
-
+### ۱. تنظیمات شبکه کرنل (Kernel Modules & Sysctl)
