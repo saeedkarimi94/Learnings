@@ -37,7 +37,7 @@
 | TCP      | Inbound   | 10250      | Kubelet API             | All                |
 | TCP      | Inbound   | 30000-32767| NodePort Services       | All                |
 
-## معماری و نقشه راه نصب (با kubeadm)
+# معماری و نقشه راه نصب (با kubeadm)
 
 فرآیند راه‌اندازی کلاستر به این صورت است که کارهای زیر را در چند فاز انجام می‌دهیم:
 1. **آماده‌سازی همه نودها (Master و Workerها):** پیش‌نیازهای شبکه کرنل + نصب Container Runtime (containerd) + نصب ابزارهای Kubeadm/Kubelet.
@@ -49,7 +49,8 @@
 ### ۱. تنظیمات شبکه کرنل (Kernel Modules & Sysctl)
 برای اینکه ترافیک کانتینرها به درستی فوروارد شود و فایروال iptables بسته‌ها را ببیند:
 
-# بارگذاری ماژول‌های کرنل
+### بارگذاری ماژول‌های کرنل
+```bash
 cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
 overlay
 br_netfilter
@@ -57,8 +58,9 @@ EOF
 
 sudo modprobe overlay
 sudo modprobe br_netfilter
+```
 
-# اعمال تنظیمات شبکه در کرنل
+### اعمال تنظیمات شبکه در کرنل
 ```bash
 cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
 net.bridge.bridge-nf-call-iptables  = 1
