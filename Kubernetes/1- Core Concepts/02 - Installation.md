@@ -96,8 +96,8 @@ containerd config default | sudo tee /etc/containerd/config.toml
 sudo apt update
 sudo apt install -y apt-transport-https ca-certificates curl gpg
 
-**نکته**: کلید امضای عمومی مخازن بسته Kubernetes را دانلود کنید. کلید امضای یکسانی برای همه مخازن استفاده می‌شود، بنابراین می‌توانید نسخه موجود در URL را نادیده بگیرید:
-* اگر دایرکتوری `/etc/apt/keyrings` وجود ندارد، باید قبل از دستور curl ایجاد شود، نکته زیر را بخوانید.
+نکته: کلید امضای عمومی مخازن بسته Kubernetes را دانلود کنید. کلید امضای یکسانی برای همه مخازن استفاده می‌شود، بنابراین می‌توانید نسخه موجود در URL را نادیده بگیرید:
+اگر دایرکتوری `/etc/apt/keyrings` وجود ندارد، باید قبل از دستور curl ایجاد شود، نکته زیر را بخوانید.
 
   sudo mkdir -p -m 755 /etc/apt/keyrings
   curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.35/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
