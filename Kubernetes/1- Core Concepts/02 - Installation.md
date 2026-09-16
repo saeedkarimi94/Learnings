@@ -95,6 +95,10 @@ containerd config default | sudo tee /etc/containerd/config.toml
 ```bash
 sudo apt update
 sudo apt install -y apt-transport-https ca-certificates curl gpg
+- **نکته**: کلید امضای عمومی مخازن بسته Kubernetes را دانلود کنید. کلید امضای یکسانی برای همه مخازن استفاده می‌شود، بنابراین می‌توانید نسخه موجود در URL را نادیده بگیرید:
+  - اگر دایرکتوری `/etc/apt/keyrings` وجود ندارد، باید قبل از دستور curl ایجاد شود، نکته زیر را بخوانید.
+  sudo mkdir -p -m 755 /etc/apt/keyrings
+  curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.35/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
 # اضافه کردن کلید امنیتی و مخزن کوبرنتیز
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.30/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
@@ -182,12 +186,6 @@ worker-1   Ready    <none>          2m    v1.30.x
 worker-2   Ready    <none>          2m    v1.30.x
 ```
 
-# Installing kubeadm, kubelet and kubectl
-جهت کار با کوبرنتیز نیازمند نصب بسته‌های زیر می‌باشیم:
-
-1. **kubeadm**: دستوری برای بوت‌استرپ کردن کلاستر.
-2. **kubelet**: کامپوننتی که روی تمام ماشین‌های موجود در کلاستر شما اجرا می‌شود و کارهایی مانند راه‌اندازی پادها و کانتینرها را انجام می‌دهد.
-3.  **kubectl**: ابزار خط فرمان برای ارتباط با کلاستر شما.
 
 
 
