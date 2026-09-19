@@ -1,3 +1,5 @@
+<div dir="rtl" lang="fa">
+
 # Install, Configuration and Validation:
 برای راه‌اندازی کوبرنتیز به حداقل ترین سیستم مورد نیاز 1 Master و 1 Worker نیازداریم.
 
@@ -232,7 +234,7 @@ master     Ready    control-plane   10m   v1.30.x
 worker-1   Ready    <none>          2m    v1.30.x
 worker-2   Ready    <none>          2m    v1.30.x
 ```
-
+</div>
 
 
 
