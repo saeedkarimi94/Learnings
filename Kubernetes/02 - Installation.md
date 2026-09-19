@@ -127,10 +127,55 @@ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 ### ۳. نصب پلاگین شبکه پادها (CNI Plugin)
-تا وقتی پلاگین شبکه نصب نشود، نودها در حالت NotReady می‌مانند چون پادها نمی‌توانند به هم آی‌پی بدهند. ما از Flannel یا Calico استفاده می‌کنیم (مثال با Flannel):
+پس از اجرای `kubeadm init`، کلاستر به یک پلاگین شبکه نیاز دارد تا پادها بتوانند با یکدیگر صحبت کنند و نودها به وضعیت `Ready` برسند. بر اساس سناریو و نیاز کلاستر، یکی از سه گزینه زیر را انتخاب و نصب کنید:
+#### 🔹 گزینه اول: Flannel (ساده‌ترین گزینه - مناسب یادگیری و تست)
+شبکه‌ای بسیار سبک و بدون پیچیدگی امنیتی:
 ```bash
+# رنج CIDR پیشنهادی در init: 10.244.0.0/16
 kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
 ```
+#### 🔹 گزینه دوم: Calico (استاندارد محیط‌های عملیاتی و Production)
+پشتیبانی کامل از Network Policy و فایروال داخلی بین پادها:
+اگر در سازمان نیاز داشته باشید که مشخص کنید «پاد A فقط بتواند به دیتابیس وصل شود و پاد B نتواند پاد C را پینگ کند» (اصطلاحاً Network Policy)، کالیکو استانداردترین و محبوب‌ترین گزینه پروداکشن در دنیاست.
+* پیش‌نیاز در kubeadm init:
+کالیکو به‌صورت پیش‌فرض رنج 192.168.0.0/16 را پیشنهاد می‌دهد:
+```bash
+sudo kubeadm init --pod-network-cidr=192.168.0.0/16
+```
+* دستورات نصب Calico:
+مدرن‌ترین و استانداردترین روش نصب Calico با استفاده از Tigera Operator است (فقط ۲ دستور):
+```bash
+# گام ۱: نصب اپراتور کالیکو
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.0/manifests/tigera-operator.yaml
+
+# گام ۲: نصب مانیفست‌های سفارشی (ساخت کلاستر شبکه)
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.0/manifests/custom-resources.yaml
+```
+   * نکته: اگر در kubeadm init رنج پاد را چیزی غیر از 192.168.0.0/16 گذاشتید (مثلاً همان 10.244.0.0/16)، قبل از اجرای دستور دوم، فایل custom-resources.yaml را دانلود کرده و خط cidr: 192.168.0.0/16 را متناسب با رنج خودتان ویرایش کنید.
+
+#### 🔹 گزینه سوم: Cilium (مدرن‌ترین گزینه - مبتنی بر eBPF و پرفورمنس بالا)
+چرا Cilium؟
+
+سیلیوم مدرن‌ترین CNI حال حاضر است. به جای استفاده از iptables لینوکس (که در ترافیک بالا کند می‌شود)، کدهای C کوچکی را مستقیماً داخل هسته لینوکس (eBPF) کامپایل و اجرا می‌کند. سرعت سرسام‌آور، مانیتورینگ فوق‌العاده با ابزار Hubble، و فایروال سطح ۷ (مثلاً مسدود کردن متد DELETE در مسیر /api/users) از ویژگی‌های آن است.
+* پیش‌نیاز:
+کرنل لینوکس نسخه 4.9 به بالا (در Ubuntu 22.04 و 24.04 پیش‌فرض اوکی است).
+* دستورات نصب Cilium:
+بهترین و تمیزترین روش، استفاده از ابزار خط فرمان اختصاصی خودِ سیلیوم (Cilium CLI) است:
+```bash
+# گام ۱: دانلود و نصب باینری Cilium CLI
+CILIUM_CLI_VERSION=$(curl -s https://raw.githubusercontent.com/cilium/cilium-cli/main/stable.txt)
+CLI_ARCH=amd64
+curl -L --fail --remote-name-all https://github.com/cilium/cilium-cli/releases/download/${CILIUM_CLI_VERSION}/cilium-linux-${CLI_ARCH}.tar.gz
+sudo tar xzvfC cilium-linux-${CLI_ARCH}.tar.gz /usr/local/bin
+rm cilium-linux-${CLI_ARCH}.tar.gz
+
+# گام ۲: نصب خودکار سیلیوم روی کلاستر
+cilium install
+
+# گام ۳: بررسی وضعیت سلامت شبکه (Status Check)
+cilium status
+```
+
 اکنون اگر دستور زیر را بزنید وضعیت مستر باید Ready شود:
 ```bash
 kubectl get nodes
