@@ -1,3 +1,5 @@
+<div dir="rtl" lang="fa">
+
 # معماری کلی کوبرنتیز:
 
 <img width="1156" height="665" alt="image" src="https://github.com/user-attachments/assets/0e92004e-8a70-415d-8d3c-7ddcf1597980" />
@@ -75,7 +77,6 @@
 
 <img width="828" height="394" alt="image" src="https://github.com/user-attachments/assets/7bf4c145-e597-457d-bc2f-e9c1c73e1e93" />
 
+</div>
+
 ---
-
-# Install, Configuration and Validation:
-
