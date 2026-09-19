@@ -1,3 +1,20 @@
+@font-face {
+  font-family: 'B Nazanin';
+  src: url('B-NAZANIN.TTF') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+html, body {
+  font-family: 'B Nazanin', Tahoma, Arial, sans-serif;
+  line-height: 1.9;
+}
+
+[dir="rtl"] {
+  direction: rtl;
+  text-align: right;
+}
+
 [dir="rtl"] {
   direction: rtl;
   text-align: right;
@@ -34,4 +51,11 @@
 [dir="rtl"] strong,
 [dir="rtl"] em {
   unicode-bidi: isolate;
+}
+
+[dir="rtl"] pre,
+[dir="rtl"] pre code {
+  direction: ltr;
+  text-align: left;
+  font-family: Consolas, Monaco, monospace;
 }
