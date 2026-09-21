@@ -1,31 +1,50 @@
 <div dir="rtl" lang="fa">
 
 
+# Initialize Kubernetes
+مرحله Initialize کردن (مقداردهی اولیه کلاستر) در واقع همان نقطه صفر تولد کلاستر است؛ جایی که سرور عادی لینوکسی شما رسماً تبدیل به مغز متفکر (Master / Control Plane) می‌شود.این کار با دستور kubeadm init انجام می‌شود
 
-## فاز ۲: کارهای اختصاصی Master (Control Plane)
-
-### ۱. مقداردهی اولیه کلاستر (kubeadm init)
+## ۱. مقداردهی اولیه کلاستر (kubeadm init)
 این دستور را فقط روی سرور Master می‌زنیم. رنج شبکه پادها (pod-network-cidr) برای پلاگین شبکه (مثل Calico یا Flannel) مشخص می‌شود:
 ```bash
 sudo kubeadm init --pod-network-cidr=10.10.0.0/16 --apiserver-advertise-address=<IP_MASTER_NODE>
 ```
 * **نکته**: در پایان خروجی این دستور، یک خط شامل kubeadm join ... --token ... به شما می‌دهد. آن را در جایی کپی و ذخیره کنید!
-### ۲. تنظیم دسترسی kubectl برای کاربر عادی
+* این فلگ‌ها (سوییچ‌ها) دقیقاً چه می‌کنند؟
+  - --apiserver-advertise-address:
+    - به کوبرنتیز می‌گوید: «آی‌پی سرور مستر در شبکه محلی این است». سایر نودها (Workerها) و خود kubectl باید با این آی‌پی صحبت کنند. اگر سرور شما چند کارت شبکه دارد، نوشتن این سوییچ حیاتی است.
+  - --pod-network-cidr:
+    - رنج IP پادها را مشخص می‌کند. شبکه داخلی پادها کاملاً مجزا از شبکه فیزیکی سرورهاست.
+
+### در پشت صحنه kubeadm init چه اتفاقاتی می‌افتد؟
+وقتی اینتر را می‌زنید، kubeadm مراحل زیر را به ترتیب طی می‌کند:
+1. Preflight Checks: چک می‌کند رم حداقل ۲ گیگ باشد، ۲ هسته CPU باشد، پورت ۶۴۴۳ باز باشد، Swap حتماً خاموش باشد و containerd بالا باشد.
+2. تولید گواهی‌نامه‌ها (Certificates): تمام کلیدهای رمزنگاری TLS برای ارتباط امن اجزا در مسیر /etc/kubernetes/pki ساخته می‌شود.
+3. تولید Kubeconfig: فایل‌های پیکربندی دسترسی مثل admin.conf در /etc/kubernetes/ ساخته می‌شوند.
+4. اجرای اجزای Control Plane به عنوان Static Pod: کانتینرهای kube-apiserver، kube-controller-manager، kube-scheduler و etcd بالا می‌آیند (مانیفست آن‌ها در /etc/kubernetes/manifests/ ریخته می‌شود).
+5. ساخت Bootstrap Token: یک توکن ساخته می‌شود تا Workerها بتوانند با آن احراز هویت کنند و به کلاستر ملحق شوند.
+
+### خروجی موفقیت‌آمیز و گام بعدی اجباری
+وقتی کار تمام شود، پیامی مثل این می‌گیرید:
+```bash
+Your Kubernetes control-plane has initialized successfully!
+```
+## ۲. تنظیم دسترسی kubectl برای کاربر عادی
 برای اینکه بتوانید با دستور kubectl با کلاستر کار کنید:
 ```bash
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
-### ۳. نصب پلاگین شبکه پادها (CNI Plugin)
+## ۳. نصب پلاگین شبکه پادها (CNI Plugin)
 پس از اجرای `kubeadm init`، کلاستر به یک پلاگین شبکه نیاز دارد تا پادها بتوانند با یکدیگر صحبت کنند و نودها به وضعیت `Ready` برسند. بر اساس سناریو و نیاز کلاستر، یکی از سه گزینه زیر را انتخاب و نصب کنید:
-#### 🔹 گزینه اول: Flannel (ساده‌ترین گزینه - مناسب یادگیری و تست)
+### 🔹 گزینه اول: Flannel (ساده‌ترین گزینه - مناسب یادگیری و تست)
 شبکه‌ای بسیار سبک و بدون پیچیدگی امنیتی:
 ```bash
 # رنج CIDR پیشنهادی در init: 10.244.0.0/16
 kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml
 ```
-#### 🔹 گزینه دوم: Calico (استاندارد محیط‌های عملیاتی و Production)
+### 🔹 گزینه دوم: Calico (استاندارد محیط‌های عملیاتی و Production)
 پشتیبانی کامل از Network Policy و فایروال داخلی بین پادها:
 اگر در سازمان نیاز داشته باشید که مشخص کنید «پاد A فقط بتواند به دیتابیس وصل شود و پاد B نتواند پاد C را پینگ کند» (اصطلاحاً Network Policy)، کالیکو استانداردترین و محبوب‌ترین گزینه پروداکشن در دنیاست.
 * پیش‌نیاز در kubeadm init:
@@ -44,7 +63,7 @@ kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.28.0
 ```
    * نکته: اگر در kubeadm init رنج پاد را چیزی غیر از 192.168.0.0/16 گذاشتید (مثلاً همان 10.244.0.0/16)، قبل از اجرای دستور دوم، فایل custom-resources.yaml را دانلود کرده و خط cidr: 192.168.0.0/16 را متناسب با رنج خودتان ویرایش کنید.
 
-#### 🔹 گزینه سوم: Cilium (مدرن‌ترین گزینه - مبتنی بر eBPF و پرفورمنس بالا)
+### 🔹 گزینه سوم: Cilium (مدرن‌ترین گزینه - مبتنی بر eBPF و پرفورمنس بالا)
 چرا Cilium؟
 
 سیلیوم مدرن‌ترین CNI حال حاضر است. به جای استفاده از iptables لینوکس (که در ترافیک بالا کند می‌شود)، کدهای C کوچکی را مستقیماً داخل هسته لینوکس (eBPF) کامپایل و اجرا می‌کند. سرعت سرسام‌آور، مانیتورینگ فوق‌العاده با ابزار Hubble، و فایروال سطح ۷ (مثلاً مسدود کردن متد DELETE در مسیر /api/users) از ویژگی‌های آن است.
@@ -71,7 +90,7 @@ cilium status
 ```bash
 kubectl get nodes
 ```
-## فاز ۳: کارهای اختصاصی Workerها (Join کردن)
+## کارهای اختصاصی Workerها (Join کردن)
 حالا وارد سرورهای Worker می‌شویم و دستوری که در خروجی kubeadm init دریافت کرده بودیم را با sudo اجرا می‌کنیم:
 ```bash
 sudo kubeadm join <IP_MASTER_NODE>:6443 --token <TOKEN> \
@@ -112,7 +131,7 @@ sudo kubeadm join <IP_MASTER>:6443 --token <توکن_مرحله_اول> --discov
 
 
 
-## فاز ۴: اعتبارسنجی (Validation)
+## اعتبارسنجی (Validation)
 ```bash
 kubectl get nodes
 ```
