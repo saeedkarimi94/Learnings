@@ -38,6 +38,7 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 ```
 ## ۳. نصب پلاگین شبکه پادها (CNI Plugin)
 پس از اجرای `kubeadm init`، کلاستر به یک پلاگین شبکه نیاز دارد تا پادها بتوانند با یکدیگر صحبت کنند و نودها به وضعیت `Ready` برسند. بر اساس سناریو و نیاز کلاستر، یکی از سه گزینه زیر را انتخاب و نصب کنید:
+
 ### 🔹 گزینه اول: Flannel (ساده‌ترین گزینه - مناسب یادگیری و تست)
 شبکه‌ای بسیار سبک و بدون پیچیدگی امنیتی:
 ```bash
@@ -129,8 +130,6 @@ openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | \
 sudo kubeadm join <IP_MASTER>:6443 --token <توکن_مرحله_اول> --discovery-token-ca-cert-hash sha256:<هش_مرحله_دوم>
 ```
 
-
-
 ## اعتبارسنجی (Validation)
 ```bash
 kubectl get nodes
@@ -143,8 +142,6 @@ worker-1   Ready    <none>          2m    v1.30.x
 worker-2   Ready    <none>          2m    v1.30.x
 ```
 </div>
-
-
 
 ---
 
