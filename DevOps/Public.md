@@ -12,3 +12,7 @@ Domains=~.
 ```bash
 sudo systemctl restart systemd-resolved
 ```
+
+
+
+---
