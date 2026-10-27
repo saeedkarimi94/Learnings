@@ -6,6 +6,9 @@ sudo nano /etc/systemd/resolved.conf
 ```
 ```bash
 [Resolve]
-DNS=178.22.122.100 185.51.200.2
+DNS=178.22.122.101 185.51.200.1
 Domains=~.
+```
+```bash
+sudo systemctl restart systemd-resolved
 ```
