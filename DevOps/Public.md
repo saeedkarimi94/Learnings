@@ -14,7 +14,7 @@ sudo systemctl restart systemd-resolved
 ```
 ---
 ## دانلود پکیج‌های نوگت
-* روش اول:
+### روش اول:
 ```bash
 packages=(
   "microsoft.extensions.caching.abstractions"
