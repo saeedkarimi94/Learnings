@@ -16,27 +16,36 @@ sudo systemctl restart systemd-resolved
 ## دانلود پکیج‌های نوگت
 ### روش اول:
 ```bash
+set -e
+
+# Format: "package_name:version"
 packages=(
-  "microsoft.extensions.caching.abstractions"
-  "microsoft.extensions.dependencyinjection.abstractions"
-  "microsoft.extensions.logging.abstractions"
-  "microsoft.extensions.options"
-  "microsoft.extensions.primitives"
-  "microsoft.extensions.dependencyinjection"
+  "microsoft.aspnetcore.authentication.jwtbearer:10.0.11"
+  "microsoft.aspnetcore.openapi:10.0.11"
+  "microsoft.entityframeworkcore.sqlserver:10.0.11"
+  "microsoft.entityframeworkcore.tools:10.0.11"
+  "microsoft.entityframeworkcore.design:10.0.11"
+  "swashbuckle.aspnetcore:10.2.3"
+  "microsoft.data.sqlclient:6.1.6"
+  "system.configuration.configurationmanager:9.0.13"
+  "system.security.cryptography.pkcs:9.0.13"
 )
 
-for pkg in "${packages[@]}"; do
-  echo "Downloading $pkg..."
-  curl -fSL -o "${pkg}.10.0.12.nupkg" "https://www.nuget.org/api/v2/package/${pkg}/10.0.12"
+for item in "${packages[@]}"; do
+  pkg="${item%%:*}"
+  ver="${item##*:}"
+  echo "Downloading $pkg ($ver)..."
+  curl -fSL -o "${pkg}.${ver}.nupkg" "https://www.nuget.org/api/v2/package/${pkg}/${ver}"
 done
 
+echo "All packages downloaded successfully!"
 ```
 * روش دوم
 ```bash
 curl -fSL -o microsoft.data.sqlclient.extensions.abstractions.7.0.1.nupkg "https://www.nuget.org/api/v2/package/Microsoft.Data.SqlClient.Extensions.Abstractions/7.0.1"
 ```
 ---
-## پوش کردن پکیج‌های نوگت:
+## پوش کردن پکیج‌های نوگت در نکسوز:
 * ایجاد فایل زیر در مسیر پکیج‌ها:
 ```bash
 mkdir ./nugetpackage
