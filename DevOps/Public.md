@@ -69,7 +69,7 @@ vim Nuget.config
 ```
 * و مرحله بعد پوش کردن در نکسوز:
 ```bash
-dotnet nuget push "*.nupkg" -k a0e46a9c-7a15-32ac-83c4-4005d39b60d5 -s http://192.168.57.50:8081/repository/nuget-hosted/ --skip-duplicate
+dotnet nuget push "*.nupkg" -k a0e46a9c-7a15-32ac-83c4-4005d39b60d5 -s http://192.168.57.50:8081/repository/nuget-hosted/ --skip-duplicate --configfile Nuget.config
 ```
 
 ---
