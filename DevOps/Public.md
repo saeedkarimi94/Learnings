@@ -40,7 +40,7 @@ done
 
 echo "All packages downloaded successfully!"
 ```
-### روش دوم
+### روش دوم:
 ```bash
 curl -fSL -o microsoft.data.sqlclient.extensions.abstractions.7.0.1.nupkg "https://www.nuget.org/api/v2/package/Microsoft.Data.SqlClient.Extensions.Abstractions/7.0.1"
 ```
