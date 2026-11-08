@@ -32,6 +32,13 @@ kube-scheduler-public-agent12            1/1     Running   3 (6d ago)   13d
 - **وظیفه:** تصمیم می‌گیرد هر پاد روی کدام Worker Node قرار بگیرد (با توجه به منابع مثل CPU و RAM).
 
 ### فایل‌های سیستمی به صورت پیشفرش در دایرکتوری زیر ذخیره می‌شوند:
-/etc/kubernetes/manifests/><br>
+```
+/etc/kubernetes/manifests/
+├── etcd.yaml
+├── kube-apiserver.yaml
+├── kube-controller-manager.yaml
+└── kube-scheduler.yaml
+```
+/etc/kubernetes/manifests/<br>
 etcd.yaml  kube-apiserver.yaml  kube-controller-manager.yaml  kube-scheduler.yaml
 ###
