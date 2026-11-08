@@ -1,6 +1,22 @@
 # Control Plane Architecture
-
 در این بخش اجزای اصلی مغز متفکر کلاستر (Control Plane) را بررسی می‌کنیم.
+
+### مشاهده پادهای سیستمی
+- برای مشاهده پادهای سیستمی از دستور زیر استفاده می‌کنیم
+```bash
+kubectl get pod -n kube-system
+```
+در خرپوجی دستور بالا پادهای سیستمی رو میبینید که مهمترین آن‌ها موارد زیر ‌می‌باشند و در صورتی که هرکدام از موارد زیر بالا نباشه کل کلاستر به مشمل بر میخورد:
+karimi@Public-Agent12:~$ kubectl get pod -n kube-system
+NAME                                     READY   STATUS    RESTARTS     AGE
+coredns-55cb58b774-q8s7m                 1/1     Running   0            5d16h
+coredns-55cb58b774-tpqhc                 1/1     Running   0            5d16h
+*etcd-public-agent12                      1/1     Running   0            13d*
+*kube-apiserver-public-agent12            1/1     Running   0            13d*
+*kube-controller-manager-public-agent12   1/1     Running   3 (6d ago)   13d*
+kube-proxy-2j26p                         1/1     Running   0            13d
+kube-proxy-v48gk                         1/1     Running   0            13d
+*kube-scheduler-public-agent12            1/1     Running   3 (6d ago)   13d*
 
 ## 1. دیتابیس etcd
 - **تعریف:** یک پایگاه داده Key-Value توزیع شده و فوق‌سریع.
