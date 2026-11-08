@@ -34,10 +34,10 @@ kube-scheduler-public-agent12            1/1     Running   3 (6d ago)   13d
 ### فایل‌های سیستمی به صورت پیشفرش در دایرکتوری زیر ذخیره می‌شوند:
 
 /etc/kubernetes/manifests/<br>
-├── etcd.yaml
-├── kube-apiserver.yaml
-├── kube-controller-manager.yaml
-└── kube-scheduler.yaml
+├── etcd.yaml<br>
+├── kube-apiserver.yaml<br>
+├── kube-controller-manager.yaml<br>
+└── kube-scheduler.yaml<br>
 
 /etc/kubernetes/manifests/<br>
 etcd.yaml  kube-apiserver.yaml  kube-controller-manager.yaml  kube-scheduler.yaml
