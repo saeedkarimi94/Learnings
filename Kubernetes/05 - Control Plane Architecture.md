@@ -1,6 +1,6 @@
 # Control Plane Architecture
 در این بخش اجزای اصلی مغز متفکر کلاستر (Control Plane) را بررسی می‌کنیم.
-
+---
 ### مشاهده پادهای سیستمی
 - برای مشاهده پادهای سیستمی از دستور زیر استفاده می‌کنیم
 ```bash
@@ -31,14 +31,12 @@ kube-scheduler-public-agent12            1/1     Running   3 (6d ago)   13d
 ## 4. Scheduler
 - **وظیفه:** تصمیم می‌گیرد هر پاد روی کدام Worker Node قرار بگیرد (با توجه به منابع مثل CPU و RAM).
 
-### فایل‌های سیستمی به صورت پیشفرش در دایرکتوری زیر ذخیره می‌شوند:
+## فایل‌های سیستمی به صورت پیشفرش در دایرکتوری زیر ذخیره می‌شوند:
+
 
 /etc/kubernetes/manifests/<br>
 ├── etcd.yaml<br>
 ├── kube-apiserver.yaml<br>
 ├── kube-controller-manager.yaml<br>
 └── kube-scheduler.yaml<br>
-
-/etc/kubernetes/manifests/<br>
-etcd.yaml  kube-apiserver.yaml  kube-controller-manager.yaml  kube-scheduler.yaml
 ###
