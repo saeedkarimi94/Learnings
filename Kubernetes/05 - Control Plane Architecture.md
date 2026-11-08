@@ -38,10 +38,18 @@ kube-scheduler-public-agent12            1/1     Running   3 (6d ago)   13d
 ├── kube-apiserver.yaml<br>
 ├── kube-controller-manager.yaml<br>
 └── kube-scheduler.yaml<br>
-#### نکته: برای دیدن پاد مورد نظر از دستور زیر استفاده می‌کنیم:
+#### نکته: برای exec کردن پاد مورد نظر از دستور زیر استفاده می‌کنیم:
+```bash
 kubectl exec -it -n <nsname> <podname> -- bash
-### 1. بررسی etcd.yaml
+```
+### 1.1 بررسی etcd.yaml
 * در اینجا برخی از تنظیمات این فایل را بررسی می‌کنیم:
+    - --cert-file=/etc/kubernetes/pki/etcd/server.crt<br>
+    این آدرسی هست cert مربوط به اتصال به دیتابیس در آن ذخیره شده است، درواقع این تنظیمات همان publickey اتصال به دیتابیس می‌باشد.
+    - --key-file=/etc/kubernetes/pki/etcd/server.key<br>
+    این تنظیمات هم درواقع همان privatekey تنظیمات اتصال به دیتابیس می‌باشد.
+    - --trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt<br>
+    این تنظیمات هم درواقع همان آدرسی است که certificate از آن صادر شده است.
     - --listen-client-urls=https://127.0.0.1:2379,https://192.168.57.49:2379<br>
     این گزینه پورت دیتابیس را به ما نمایش می‌دهد، یعنی دیتابیس روی پورت 2379 بالا می‌باشد و به صورت لوکالی می‌توان به دیتابیس متصل شد.
     - --advertise-client-urls=https://192.168.57.49:2379<br>
@@ -52,4 +60,9 @@ kubectl exec -it -n <nsname> <podname> -- bash
     این تنظیمات مربوط به مانیتورنگ دیتابیس می‌باشد.
     - --data-dir=/var/lib/etcd<br>
     مسیری هست که اطلاعات دیتابیس در آن ذخیره می‌شود.
+### 1.2 روش اتصال به دیتابیس
+* برای اتصال به دیتابیس و مشاهده کلیدها و مقدار ها از دستور زیر استفاده میکنیم:
+```bash
+نعذث
+```
 
