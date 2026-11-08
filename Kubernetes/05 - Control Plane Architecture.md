@@ -32,7 +32,7 @@ kube-scheduler-public-agent12            1/1     Running   3 (6d ago)   13d
 ## 4. Scheduler
 - **وظیفه:** تصمیم می‌گیرد هر پاد روی کدام Worker Node قرار بگیرد (با توجه به منابع مثل CPU و RAM).
 ---
-## فایل‌های سیستمی به صورت پیشفرش در دایرکتوری زیر ذخیره می‌شوند:
+### فایل‌های سیستمی به صورت پیشفرش در دایرکتوری زیر ذخیره می‌شوند:
 
 
 /etc/kubernetes/manifests/<br>
@@ -40,4 +40,8 @@ kube-scheduler-public-agent12            1/1     Running   3 (6d ago)   13d
 ├── kube-apiserver.yaml<br>
 ├── kube-controller-manager.yaml<br>
 └── kube-scheduler.yaml<br>
-###
+### 1. بررسی etcd.yaml
+* در اینجا برخی از تنظیمات این فایل را بررسی می‌کنیم:
+- --advertise-client-urls=https://192.168.57.49:2379
+این گزینه پورت دیتابیس را به ما نمایش می‌دهد، یعنی دیتابیس روی پورت 2379 listen می‌شود.
+
