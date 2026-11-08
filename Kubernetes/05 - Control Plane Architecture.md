@@ -15,7 +15,7 @@ kube-apiserver-public-agent12            1/1     Running   0            13d
 kube-controller-manager-public-agent12   1/1     Running   3 (6d ago)   13d
 kube-scheduler-public-agent12            1/1     Running   3 (6d ago)   13d
 ```
-## 1. دیتابیس etcd
+## 1. etcd
 - **تعریف:** یک پایگاه داده Key-Value توزیع شده و فوق‌سریع.
 - **وظیفه:** ذخیره وضعیت (State) کل کلاستر. اگر etcd نباشد، کوبرنتیز هیچ چیزی از کلاستر نمی‌داند.
 - **نکته کلیدی:** تنها جزء کلاستر است که وضعیت را در دیسک ذخیره می‌کند (Stateful). بقیه اجزا Stateless هستند.
@@ -30,3 +30,8 @@ kube-scheduler-public-agent12            1/1     Running   3 (6d ago)   13d
 
 ## 4. Scheduler
 - **وظیفه:** تصمیم می‌گیرد هر پاد روی کدام Worker Node قرار بگیرد (با توجه به منابع مثل CPU و RAM).
+
+### فایل‌های سیستمی به صورت پیشفرش در دایرکتوری زیر  ذخیره می‌شوند:
+/etc/kubernetes/manifests/
+etcd.yaml  kube-apiserver.yaml  kube-controller-manager.yaml  kube-scheduler.yaml
+###
