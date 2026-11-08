@@ -40,7 +40,8 @@ kube-scheduler-public-agent12            1/1     Running   3 (6d ago)   13d
 └── kube-scheduler.yaml<br>
 #### نکته: برای exec کردن پاد مورد نظر از دستور زیر استفاده می‌کنیم:
 ```bash
-kubectl exec -it -n <nsname> <podname> -- bash
+kubectl exec -it -n <nsname> <podname> -- bash/sh
+kubectl exec -it -n kube-system etcd-public-agent12 sh
 ```
 ### 1.1 بررسی etcd.yaml
 * در اینجا برخی از تنظیمات این فایل را بررسی می‌کنیم:
@@ -63,6 +64,6 @@ kubectl exec -it -n <nsname> <podname> -- bash
 ### 1.2 روش اتصال به دیتابیس
 * برای اتصال به دیتابیس و مشاهده کلیدها و مقدار ها از دستور زیر استفاده میکنیم:
 ```bash
-نعذث
+
 ```
 
