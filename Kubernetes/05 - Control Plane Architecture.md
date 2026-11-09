@@ -76,11 +76,11 @@ kubectl -n kube-system exec -it etcd-public-agent12 -- etcdctl get / --cert="/et
     --key<br>
     مقادیر آن‌ها باید دقیقاً با مقداری که در فایل etcd.yaml هست یکی باشد.
 ---
-## ۲. بررسی عمیق kube-apiserver
+## 2. بررسی عمیق kube-apiserver
 
 همان‌طور که گفتیم، API Server **تنها دروازه ورود به کلاستر** و **تنها جزئی است که اجازه دارد با etcd صحبت کند**. هیچ کامپوننتی (نه Scheduler، نه Controller Manager، نه Kubelet و نه کاربر عادی) حق دسترسی مستقیم به دیتابیس etcd را ندارد.
 
-### ۲.۱ وظایف اصلی kube-apiserver در پردازش یک درخواست:
+### 2.1 وظایف اصلی kube-apiserver در پردازش یک درخواست:
 وقتی دستوری مثل `kubectl apply -f pod.yaml` را می‌زنید، API Server به ترتیب ۳ گام زیر را طی می‌کند:
 
 1. **احراز هویت (Authentication):** تو کیستی؟ (بررسی Certificate، توکن یا یوزرنیم/پسورد).
@@ -91,7 +91,7 @@ kubectl -n kube-system exec -it etcd-public-agent12 -- etcdctl get / --cert="/et
 
 ---
 
-### ۲.۲ بررسی فایل kube-apiserver.yaml
+### 2.2 بررسی فایل kube-apiserver.yaml
 مانیفست این کامپوننت در مسیر `/etc/kubernetes/manifests/kube-apiserver.yaml` قرار دارد. مهم‌ترین پارامترهای آن عبارتند از:
 
 * `--secure-port=6443`
@@ -109,7 +109,7 @@ kubectl -n kube-system exec -it etcd-public-agent12 -- etcdctl get / --cert="/et
 
 ---
 
-### ۲.۳ روش‌های صحبت با API Server
+### 2.3 روش‌های صحبت با API Server
 دستور `kubectl` در پشت صحنه هیچ جادویی نمی‌کند! صرفاً دستورات شما را تبدیل به متدهای استاندارد **RESTful API** (`GET`, `POST`, `DELETE`, `PUT`) می‌کند و به پورت ۶۴۴۳ می‌فرستد:
 
 * **با kubectl:**
