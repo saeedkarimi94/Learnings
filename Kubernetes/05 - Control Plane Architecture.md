@@ -44,10 +44,10 @@ kubectl exec -it -n <nsname> <podname> -- bash/sh
 kubectl exec -it -n kube-system etcd-public-agent12 sh
 ```
 ### 1.1 بررسی etcd.yaml
-* در اینجا برخی از تنظیمات این فایل را بررسی می‌کنیم:
-    - --cert-file=/etc/kubernetes/pki/etcd/server.crt<br>
-    این آدرسی هست cert مربوط به اتصال به دیتابیس در آن ذخیره شده است، درواقع این تنظیمات همان publickey اتصال به دیتابیس می‌باشد.
-    - --key-file=/etc/kubernetes/pki/etcd/server.key<br>
+ در اینجا برخی از تنظیمات این فایل را بررسی می‌کنیم:
+    * `--cert-file=/etc/kubernetes/pki/etcd/server.crt`<br>
+    - این آدرسی هست cert مربوط به اتصال به دیتابیس در آن ذخیره شده است، درواقع این تنظیمات همان publickey اتصال به دیتابیس می‌باشد.
+    * `--key-file=/etc/kubernetes/pki/etcd/server.key`<br>
     این تنظیمات هم درواقع همان privatekey تنظیمات اتصال به دیتابیس می‌باشد.
     - --trusted-ca-file=/etc/kubernetes/pki/etcd/ca.crt<br>
     این تنظیمات هم درواقع همان آدرسی است که certificate از آن صادر شده است.
