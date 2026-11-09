@@ -7,14 +7,14 @@
 kubectl get pod -n kube-system
 ```
 در خروجی دستور بالا پادهای سیستمی رو میبینید که مهمترین آن‌ها موارد زیر ‌می‌باشند و در صورتی که هرکدام از موارد زیر بالا نباشه کل کلاستر به مشکل بر میخورد:
-```bash
+`
 karimi@Public-Agent12:~$ kubectl get pod -n kube-system
 NAME                                     READY   STATUS    RESTARTS     AGE
 etcd-public-agent12                      1/1     Running   0            13d
 kube-apiserver-public-agent12            1/1     Running   0            13d
 kube-controller-manager-public-agent12   1/1     Running   3 (6d ago)   13d
 kube-scheduler-public-agent12            1/1     Running   3 (6d ago)   13d
-```
+`
 ---
 ## 1. etcd
 - **تعریف:** یک پایگاه داده Key-Value توزیع شده و فوق‌سریع.
