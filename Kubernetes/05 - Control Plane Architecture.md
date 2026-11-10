@@ -15,6 +15,11 @@ kube-apiserver-public-agent12            1/1     Running   0            13d
 kube-controller-manager-public-agent12   1/1     Running   3 (6d ago)   13d
 kube-scheduler-public-agent12            1/1     Running   3 (6d ago)   13d
 ```
+#### نکته: برای exec کردن پاد مورد نظر از دستور زیر استفاده می‌کنیم:
+```bash
+kubectl exec -it -n <nsname> <podname> -- bash/sh
+kubectl exec -it -n kube-system etcd-public-agent12 sh
+```
 ---
 ## 1. etcd
 - **تعریف:** یک پایگاه داده Key-Value توزیع شده و فوق‌سریع.
@@ -33,16 +38,11 @@ kube-scheduler-public-agent12            1/1     Running   3 (6d ago)   13d
 - **وظیفه:** تصمیم می‌گیرد هر پاد روی کدام Worker Node قرار بگیرد (با توجه به منابع مثل CPU و RAM).
 ---
 ### فایل‌های سیستمی به صورت پیشفرش در دایرکتوری زیر ذخیره می‌شوند:
-/etc/kubernetes/manifests/<br>
+`/etc/kubernetes/manifests/`<br>
 ├── etcd.yaml<br>
 ├── kube-apiserver.yaml<br>
 ├── kube-controller-manager.yaml<br>
 └── kube-scheduler.yaml<br>
-#### نکته: برای exec کردن پاد مورد نظر از دستور زیر استفاده می‌کنیم:
-```bash
-kubectl exec -it -n <nsname> <podname> -- bash/sh
-kubectl exec -it -n kube-system etcd-public-agent12 sh
-```
 ### 1.1 بررسی etcd.yaml
 مانیفست این کامپوننت در مسیر `/etc/kubernetes/manifests/etcd.yaml` قرار دارد. مهم‌ترین پارامترهای آن عبارتند از:
 * `--secure-port=6443`
@@ -106,12 +106,62 @@ kubectl -n kube-system exec -it etcd-public-agent12 -- etcdctl get / --cert="/et
   - رنج IP اختصاصی برای سرویس‌های کلاستر (Services). این رنج با رنج پادها (`pod-network-cidr`) کاملاً متفاوت و مجزا است.
 * `--client-ca-file=/etc/kubernetes/pki/ca.crt`
   - سرتیفیکیت مرجع (CA) برای چک کردن هویت کلاینت‌ها (مثل kubectl و سایر اجزا).
-
 ---
-
 ### 2.3 روش‌های صحبت با API Server
 دستور `kubectl` در پشت صحنه هیچ جادویی نمی‌کند! صرفاً دستورات شما را تبدیل به متدهای استاندارد **RESTful API** (`GET`, `POST`, `DELETE`, `PUT`) می‌کند و به پورت ۶۴۴۳ می‌فرستد:
 
 * **با kubectl:**
 ```bash
 kubectl get pods
+```
+---
+## 3. بررسی عمیق kube-controller-manager (موتور کنترلی کلاستر)
+
+اگر API Server منشی کلاستر باشد، Controller Manager **مدیر عملیات یا ناظر کلاستر** است. این بخش مسئول اجرای چرخه‌های کنترلی (Control Loops) در کوبرنتیز است.
+
+### 3.1 چرخه کنترلی (Control Loop) چگونه کار می‌کند؟
+یک حلقه نامحدود در پس‌زمینه اجرا می‌شود که مدام این ۳ کار را انجام می‌دهد:
+1. **Watch:** از طریق API Server وضعیت فعلی را بررسی می‌کند.
+2. **Compare:** وضعیت فعلی (مثلاً ۲ پاد سالم) را با وضعیت مطلوب ثبت‌شده در etcd (مثلاً ۳ پاد) مقایسه می‌کند.
+3. **Act:** اگر عدم تطابقی وجود داشته باشد، دستور ساخت، حذف یا ویرایش پادها و منابع را صادر می‌کند.
+---
+### 3.2 انواع کنترلرهای داخل Controller Manager
+جالب است بدانید `kube-controller-manager` در واقع **مجموعه‌ای از کنترلرهای مختلف است که در قالب یک باینری/پاد واحد تجمیع شده‌اند** تا مدیریت و اجرای آن‌ها سبک‌تر و راحت‌تر باشد. مهم‌ترین آن‌ها عبارتند از:
+
+* **Node Controller:** 
+  - مسئول بررسی سلامت نودهاست. اگر یک نود به مدت مشخصی (پیش‌فرض ۴۰ ثانیه) سیگنال ضربان قلب (Heartbeat) نفرستد، وضعیت آن را `NotReady` می‌کند و اگر این وضعیت طول بکشد، پادهای روی آن را به نود دیگری منتقل می‌نماید.
+* **Replication Controller / ReplicaSet Controller:**
+  - تضمین می‌کند همیشه به تعداد مشخص‌شده در مانیفست، پاد روی کلاستر بالا و زنده باشد. (اگر پادی کرش کند، این کنترلر پاد جدید درخواست می‌دهد).
+* **Endpoints Controller:**
+  - اتصال بین پادها و سرویس‌ها (Services) را برقرار و لیست IP پادهای پشت هر سرویس را آپدیت نگه می‌دارد.
+* **ServiceAccount & Token Controller:**
+  - ساخت اکانت‌های پیش‌فرض و توکن‌های دسترسی API برای Namespaceها.
+* **Job Controller:**
+  - پیگیری وضعیت پادهایی که برای یک کار مقطعی اجرا شده‌اند تا پس از اتمام با موفقیت خارج (Completed) شوند.
+
+---
+
+### 3.3 بررسی فایل kube-controller-manager.yaml
+مانیفست این کامپوننت نیز به صورت Static Pod در مسیر `/etc/kubernetes/manifests/kube-controller-manager.yaml` قرار دارد:
+```bash
+cat /etc/kubernetes/manifests/kube-controller-manager.yaml
+```
+### 3.4 مهم‌ترین فلگ‌ها و سوئیچ‌های این فایل:
+
+* `--kubeconfig=/etc/kubernetes/controller-manager.conf`
+  - کنترلر منیجر برای صحبت با API Server نیاز به احراز هویت دارد. این فایل شامل سرتیفیکیت‌ها و آدرس API Server است تا کنترلر بتواند مستقیماً با آن ارتباط برقرار کند.
+* `--authentication-kubeconfig و --authorization-kubeconfig`
+  - تنظیمات امنیتی برای اعتبارسنجی دسترسی‌های خود کنترلر به ریسورس‌های کلاستر.
+* `--bind-address=127.0.0.1`
+  - مشخص می‌کند این کامپوننت به صورت لوکال روی پورت‌های داخلی به خودش گوش می‌دهد.
+* `--leader-elect=true`
+  - بسیار حیاتی برای کلاسترهای High Availability (چند مستر): وقتی چند مستر نود داریم، فقط یک Controller Manager باید تصمیم‌گیرنده فعال (Leader) باشد تا دستورات تکراری صادر نشود. بقیه در حالت Standby منتظر می‌مانند تا اگر لیدر قطع شد، رهبری را به دست بگیرند.
+* `--node-monitor-period=5s`
+  - هر چند ثانیه یک‌بار وضعیت نودها را چک کند.
+* `--node-monitor-grace-period=40s`
+  - چقدر به نودی که جواب نمی‌دهد مهلت بدهد قبل از اینکه آن را NotReady اعلام کند.
+* `--cluster-signing-cert-file و --cluster-signing-key-file`
+  - مسیر کلیدها برای صدور اتوماتیک سرتیفیکیت‌های مورد نیاز درون کلاستر.
+---
+
+
