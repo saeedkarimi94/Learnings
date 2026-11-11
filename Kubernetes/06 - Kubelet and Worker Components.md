@@ -16,7 +16,7 @@
 
 ---
 
-### 1.2 kubelet یک سرویس است، نه یک پاد! (نکته معماری مهم)
+### 1.2 (نکته معماری مهم)، kubelet یک سرویس است، نه یک پاد!
 
 بگذارید یک تفاوت اساسی را از همین ابتدا گوشزد کنم که در معماری کوبرنتیز خیلی‌ها را گول می‌زند:
 * تمام اجزای Control Plane (etcd, apiserver, controller-manager, scheduler) به صورت **Static Pod** در مسیر `/etc/kubernetes/manifests/` اجرا می‌شوند.
@@ -87,13 +87,13 @@ kubelet خودش مستقیماً به کرنل لینوکس دستور ساخت
 ### 1.7 ابزارهای بررسی و عیب‌یابی kubelet روی نود
 برای اینکه همیشه بتوانید وضعیت نود و kubelet را زیر نظر داشته باشید، این دستورات روتین DevOpsی را دم دست داشته باشید:
 ```bash
-# ۱. بررسی وضعیت سرویس kubelet
+# 1. بررسی وضعیت سرویس kubelet
 sudo systemctl status kubelet
 
-# ۲. مشاهده لاگ‌های زنده kubelet با journalctl
+# 2. مشاهده لاگ‌های زنده kubelet با journalctl
 sudo journalctl -u kubelet -f -o cat
 
-# ۳. بررسی اینکه آیا kubelet می‌تواند به API Server وصل شود یا خیر
+# 3. بررسی اینکه آیا kubelet می‌تواند به API Server وصل شود یا خیر
 kubectl get nodes
 ```
 
