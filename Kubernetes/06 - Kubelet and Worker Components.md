@@ -52,12 +52,12 @@ sudo systemctl status kubelet
 sudo cat /usr/lib/systemd/system/kubelet.service
 ```
 متوجه می‌شوید که این سرویس با چه پارامترهایی اجرا می‌شود. مهم‌ترین خط آن ارجاع به فایل کانفیگ است:
-`` [Service]
-ExecStart=/usr/bin/kubelet --config=/var/lib/kubelet/config.yaml ... ``
+[Service]<br>
+ExecStart=/usr/bin/kubelet --config=/var/lib/kubelet/config.yaml 
 ---
 ### 1.5 مانیفست و تنظیمات اصلی: /var/lib/kubelet/config.yaml
 بیشتر تنظیمات kubelet در این فایل YAML قرار دارد. بیایید چند فیلد کلیدی و حیاتی آن را مرور کنیم:
-``
+``` bash
 kind: KubeletConfiguration
 apiVersion: kubelet.config.k8s.io/v1beta1
 # آدرس IP که kubelet روی آن به درخواست‌ها گوش می‌دهد (معمولاً IP خود نود)
@@ -75,4 +75,25 @@ clusterDNS:
   - 10.96.0.10     # آی‌پی سرویس CoreDNS برای حل نام‌ها در کلاستر
 staticPodPath: /etc/kubernetes/manifests # مسیر مانیفست‌های استاتیک مستر
 containerRuntimeEndpoint: unix:///var/run/containerd/containerd.sock # درگاه ارتباط با CRI
-``
+```
+---
+### 1.6 درگاه ارتباطی: Container Runtime Interface (CRI)
+kubelet خودش مستقیماً به کرنل لینوکس دستور ساخت کانتینر نمی‌دهد؛ بلکه یک واسط استاندارد به نام CRI دارد.
+* نقش CRI: یک پروتکل مبتنی بر gRPC است که دو بخش اصلی دارد:
+  - Image Service: وظیفه دانلود، آپلود و مدیریت ایمیج‌ها (Image pull/push).
+  - Runtime Service: وظیفه مدیریت چرخه حیات کانتینر (Start, Stop, Pause, Delete).
+* نقش containerd: همان موتور اجرایی (Runtime) است که پشت این درگاه نشسته و دستورات kubelet را به کانتینرهای واقعی لینوکس (namespaces, cgroups) تبدیل می‌کند.
+--- 
+### 1.7 ابزارهای بررسی و عیب‌یابی kubelet روی نود
+برای اینکه همیشه بتوانید وضعیت نود و kubelet را زیر نظر داشته باشید، این دستورات روتین DevOpsی را دم دست داشته باشید:
+```bash
+# ۱. بررسی وضعیت سرویس kubelet
+sudo systemctl status kubelet
+
+# ۲. مشاهده لاگ‌های زنده kubelet با journalctl
+sudo journalctl -u kubelet -f -o cat
+
+# ۳. بررسی اینکه آیا kubelet می‌تواند به API Server وصل شود یا خیر
+kubectl get nodes
+```
+
