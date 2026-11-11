@@ -51,7 +51,7 @@ sudo systemctl status kubelet
 ```bash
 sudo cat /usr/lib/systemd/system/kubelet.service
 ```
-متوجه می‌شوید که این سرویس با چه پارامترهایی اجرا می‌شود. مهم‌ترین خط آن ارجاع به فایل کانفیگ است:
+* متوجه می‌شوید که این سرویس با چه پارامترهایی اجرا می‌شود. مهم‌ترین خط آن ارجاع به فایل کانفیگ است:
 [Service]<br>
 ExecStart=/usr/bin/kubelet --config=/var/lib/kubelet/config.yaml 
 ---
