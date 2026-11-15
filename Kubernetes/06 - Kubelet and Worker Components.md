@@ -135,13 +135,13 @@ kubectl get nodes
 ### 2.5 دستورات عیب‌یابی و بررسی kube-proxy
 برای اینکه ببینید `kube-proxy` روی نود چطور کار می‌کند و آیا قوانین iptables یا IPVS درست تنظیم شده‌اند یا خیر:
 ```bash
-# ۱. مشاهده پادهای kube-proxy در کلاستر
+# 1. مشاهده پادهای kube-proxy در کلاستر
 kubectl get pods -n kube-system -l k8s-app=kube-proxy
 
-# ۲. بررسی لاگ‌های kube-proxy روی یک نود
+# 2. بررسی لاگ‌های kube-proxy روی یک نود
 kubectl logs -n kube-system <kube-proxy-pod-name>
 
-# ۳. بررسی قوانین iptables مربوط به کبرنتیز روی نود (اگر در حالت iptables باشد)
+# 3. بررسی قوانین iptables مربوط به کبرنتیز روی نود (اگر در حالت iptables باشد)
 sudo iptables -t nat -L KBR-SERVICES -n -v
 ```
 ---
