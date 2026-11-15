@@ -99,7 +99,7 @@ sudo journalctl -u kubelet -f -o cat
 # 3. بررسی اینکه آیا kubelet می‌تواند به API Server وصل شود یا خیر
 kubectl get nodes
 ```
-
+---
 ---
 ## 2. بررسی عمیق kube-proxy (وزیر ارتباطات و مسیریاب محلی نود)
 
@@ -130,7 +130,7 @@ kubectl get nodes
 ---
 ### 2.4 ارتباط kube-proxy با مفاهیم شبکه (ClusterIP, NodePort, LoadBalancer)
   - `ClusterIP:` فقط درون کلاستر قابل دسترس است (با کمک iptables/IPVS مپ می‌شود).
-  - `NodePort:` پورت بازی روی تمام نودها باز می‌کند و kube-proxy ترافیک را از پورت نود به پاد هدایت می‌کند.
+  - `NodePort:` پورت بازی روی تمام نودها باز می‌کند و `kube-proxy` ترافیک را از پورت نود به پاد هدایت می‌کند.
 ---
 ### 2.5 دستورات عیب‌یابی و بررسی kube-proxy
 برای اینکه ببینید `kube-proxy` روی نود چطور کار می‌کند و آیا قوانین iptables یا IPVS درست تنظیم شده‌اند یا خیر:
