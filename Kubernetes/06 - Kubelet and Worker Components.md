@@ -77,13 +77,16 @@ staticPodPath: /etc/kubernetes/manifests # مسیر مانیفست‌های اس
 containerRuntimeEndpoint: unix:///var/run/containerd/containerd.sock # درگاه ارتباط با CRI
 ```
 ---
+
 ### 1.6 درگاه ارتباطی: Container Runtime Interface (CRI)
 kubelet خودش مستقیماً به کرنل لینوکس دستور ساخت کانتینر نمی‌دهد؛ بلکه یک واسط استاندارد به نام CRI دارد.
 * نقش CRI: یک پروتکل مبتنی بر gRPC است که دو بخش اصلی دارد:
   - Image Service: وظیفه دانلود، آپلود و مدیریت ایمیج‌ها (Image pull/push).
   - Runtime Service: وظیفه مدیریت چرخه حیات کانتینر (Start, Stop, Pause, Delete).
 * نقش containerd: همان موتور اجرایی (Runtime) است که پشت این درگاه نشسته و دستورات kubelet را به کانتینرهای واقعی لینوکس (namespaces, cgroups) تبدیل می‌کند.
+
 --- 
+
 ### 1.7 ابزارهای بررسی و عیب‌یابی kubelet روی نود
 برای اینکه همیشه بتوانید وضعیت نود و kubelet را زیر نظر داشته باشید، این دستورات روتین DevOpsی را دم دست داشته باشید:
 ```bash
@@ -96,10 +99,12 @@ sudo journalctl -u kubelet -f -o cat
 # 3. بررسی اینکه آیا kubelet می‌تواند به API Server وصل شود یا خیر
 kubectl get nodes
 ```
+
 ---
 ## 2. بررسی عمیق kube-proxy (وزیر ارتباطات و مسیریاب محلی نود)
 
 اگر `kubelet` مسئول اجرای پادهاست، `kube-proxy` مسئول این است که پادها بتوانند با همدیگر و با دنیای بیرون صحبت کنند.
+
 ---
 ### 2.1 یک تشبیه ملموس برای شروع (The Traffic Cop / تابلوی هدایت ترافیک)
 * تصور کن در یک شهر بزرگ (کلاستر)، هزاران ساختمان (پاد) ساخته شده که مدام جابجا می‌شوند یا آدرس IP آن‌ها عوض می‌شود.
