@@ -106,7 +106,7 @@ kubectl get nodes
 * اینجاست که kube-proxy مثل یک مأمور راهنمایی و رانندگی هوشمند یا تابلوی هدایت در تقاطع‌ها عمل می‌کند.
 * او روی تک‌تک نودهای ورکر زندگی می‌کند و وظیفه دارد قوانین ترافیکی (iptables یا IPVS) را آپدیت نگه دارد تا هر ترافیکی که به سمت یک Service می‌آید، درست هدایت شود به سمت پادهای زنده و آماده.
 ---
-### 2.2 kube-proxy چطور کار می‌کند؟ (DaemonSet یا Binary)
+### 2.2 اینک kube-proxy چطور کار می‌کند؟ (DaemonSet یا Binary)
 * در اکثر کلاسترها (که با kubeadm بالا آمده‌اند)، kube-proxy به شکل یک DaemonSet اجرا می‌شود؛ یعنی روی تمام نودهای کارگر به صورت خودکار یک پاد از آن بالا می‌آید.
 * این کامپوننت مدام به API Server چشم دوخته (Watch) و منتظر است ببیند چه زمانی Service یا Endpoint جدیدی ساخته می‌شود یا تغییر می‌کند.
 ---
@@ -122,8 +122,20 @@ kubectl get nodes
 ### 3. حالت Userspace (منسوخ‌شده):
   - ترافیک را از فضای کاربری (User Space) عبور می‌داد که بسیار کند بود و امروزه استفاده نمی‌شود.
 ---
+### 2.4 ارتباط kube-proxy با مفاهیم شبکه (ClusterIP, NodePort, LoadBalancer)
+  - ClusterIP: فقط درون کلاستر قابل دسترس است (با کمک iptables/IPVS مپ می‌شود).
+  - NodePort: پورت بازی روی تمام نودها باز می‌کند و kube-proxy ترافیک را از پورت نود به پاد هدایت می‌کند.
+---
+### 2.5 دستورات عیب‌یابی و بررسی kube-proxy
+برای اینکه ببینید kube-proxy روی نود چطور کار می‌کند و آیا قوانین iptables یا IPVS درست تنظیم شده‌اند یا خیر:
+```bash
+# ۱. مشاهده پادهای kube-proxy در کلاستر
+kubectl get pods -n kube-system -l k8s-app=kube-proxy
 
+# ۲. بررسی لاگ‌های kube-proxy روی یک نود
+kubectl logs -n kube-system <kube-proxy-pod-name>
 
-
-
-
+# ۳. بررسی قوانین iptables مربوط به کبرنتیز روی نود (اگر در حالت iptables باشد)
+sudo iptables -t nat -L KBR-SERVICES -n -v
+```
+---
